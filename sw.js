@@ -1,0 +1,5 @@
+const CACHE='carcaca-arquivo-v1.0.2';
+const RESOURCES=['./','./index.html','./style.css','./game.js','./rooms.js','./manifest.webmanifest','./assets/map.webp','./icons/icon-192.png','./icons/icon-512.png'];
+self.addEventListener('install',event=>event.waitUntil((async()=>{const cache=await caches.open(CACHE);await cache.addAll(RESOURCES);await self.skipWaiting()})()));
+self.addEventListener('activate',event=>event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith('carcaca-arquivo-')&&k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim()})()));
+self.addEventListener('fetch',event=>{const r=event.request;if(r.method!=='GET'||new URL(r.url).origin!==self.location.origin)return;event.respondWith((async()=>{const cache=await caches.open(CACHE);const cached=await cache.match(r,{ignoreSearch:true});if(cached)return cached;try{const fresh=await fetch(r);if(fresh.ok&&new URL(r.url).pathname.startsWith(new URL(self.registration.scope).pathname))cache.put(r,fresh.clone());return fresh}catch(e){return cache.match('./index.html')||Response.error()}})())});
