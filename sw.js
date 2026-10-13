@@ -1,4 +1,4 @@
-const CACHE='carcaca-arquivo-v1.0.2';
+const CACHE='carcaca-arquivo-v1.0.3';
 const RESOURCES=['./','./index.html','./style.css','./game.js','./rooms.js','./manifest.webmanifest','./assets/map.webp','./icons/icon-192.png','./icons/icon-512.png'];
 self.addEventListener('install',event=>event.waitUntil((async()=>{const cache=await caches.open(CACHE);await cache.addAll(RESOURCES);await self.skipWaiting()})()));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith('carcaca-arquivo-')&&k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim()})()));
